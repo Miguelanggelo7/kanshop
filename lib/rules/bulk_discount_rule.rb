@@ -3,9 +3,9 @@ require 'product'
 
 class BulkDiscountRule
   def initialize(product_code, min_quantity, discounted_price)
-    @product_code     = product_code
-    @min_quantity     = min_quantity
-    @discounted_price = discounted_price
+    @product_code = product_code
+    @min_quantity = min_quantity
+    @discounted_price = discounted_price.is_a?(BigDecimal) ? discounted_price : BigDecimal(discounted_price.to_s)
   end
 
   def apply(items)

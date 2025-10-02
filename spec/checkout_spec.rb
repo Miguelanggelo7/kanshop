@@ -9,14 +9,14 @@ require_relative '../lib/rules/bulk_discount_rule'
 require_relative '../lib/rules/percentage_discount_rule'
 
 RSpec.describe Checkout do
-  let(:green_tea) { Product.new('GR1', 'Green tea', "3.11".to_d) }
-  let(:strawberries) { Product.new('SR1', 'Strawberries', "5.00".to_d) }
-  let(:coffee) { Product.new('CF1', 'Coffee', "11.23".to_d) }
+  let(:green_tea) { Product.new('GR1', 'Green tea', 3.11) }
+  let(:strawberries) { Product.new('SR1', 'Strawberries', 5.00) }
+  let(:coffee) { Product.new('CF1', 'Coffee', 11.23) }
 
   let(:pricing_rules) do
     [
       BuyOneGetOneFreeRule.new('GR1'),
-      BulkDiscountRule.new('SR1', 3, "4.50".to_d),
+      BulkDiscountRule.new('SR1', 3, 4.50),
       PercentageDiscountRule.new('CF1', 3, BigDecimal("2")/BigDecimal("3"))
     ]
   end
@@ -30,22 +30,22 @@ RSpec.describe Checkout do
   context 'integration tests from requirements' do
     it 'Basket: GR1, SR1, GR1, GR1, CF1 → Total: £22.45' do
       scan_items([green_tea, strawberries, green_tea, green_tea, coffee])
-      expect(checkout.total).to money_eq("22.45")
+      expect(checkout.total).to money_eq(22.45)
     end
 
     it 'Basket: GR1, GR1 → Total: £3.11' do
       scan_items([green_tea, green_tea])
-      expect(checkout.total).to money_eq("3.11")
+      expect(checkout.total).to money_eq(3.11)
     end
 
     it 'Basket: SR1, SR1, GR1, SR1 → Total: £16.61' do
       scan_items([strawberries, strawberries, green_tea, strawberries])
-      expect(checkout.total).to money_eq("16.61")
+      expect(checkout.total).to money_eq(16.61)
     end
 
     it 'Basket: GR1, CF1, SR1, CF1, CF1 → Total: £30.57' do
       scan_items([green_tea, coffee, strawberries, coffee, coffee])
-      expect(checkout.total).to money_eq("30.57")
+      expect(checkout.total).to money_eq(30.57)
     end
   end
 end
