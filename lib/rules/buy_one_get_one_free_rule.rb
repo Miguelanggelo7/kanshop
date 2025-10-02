@@ -7,24 +7,24 @@ class BuyOneGetOneFreeRule
   end
 
   def apply(items)
-    result = []
-    counter = 0
+    eligible_items, other_items = items.partition { |item| applies_to?(item) }
+    adjusted_items = apply_bogof(eligible_items)
+    adjusted_items + other_items
+  end
 
-    items.each do |item|
-      if item.code == @product_code
-        counter += 1
-        # Cada segunda unidad es gratis
-        if counter.even?
-          # Creamos una copia del producto pero con precio 0
-          result << Product.new(item.code, item.name, BigDecimal("0"))
-        else
-          result << item
-        end
-      else
-        result << item
-      end
+  private
+
+  def applies_to?(item)
+    item.code == @product_code
+  end
+
+  def apply_bogof(items)
+    items.each_with_index.map do |item, index|
+      free_item?(index) ? Product.new(item.code, item.name, BigDecimal("0")) : item
     end
+  end
 
-    result
+  def free_item?(index)
+    (index + 1).even?
   end
 end
