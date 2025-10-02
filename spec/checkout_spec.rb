@@ -27,29 +27,25 @@ RSpec.describe Checkout do
     items.each { |item| checkout.scan(item) }
   end
 
-  def money(value)
-    BigDecimal(value.to_s).round(2)
-  end
-
   context 'integration tests from requirements' do
-    it 'Basket: GR1, SR1, GR1, GR1, CF1 -> Total: £22.45' do
+    it 'Basket: GR1, SR1, GR1, GR1, CF1 → Total: £22.45' do
       scan_items([green_tea, strawberries, green_tea, green_tea, coffee])
-      expect(checkout.total).to eq(money(22.45))
+      expect(checkout.total).to money_eq("22.45")
     end
 
-    it 'Basket: GR1, GR1 -> Total: £3.11' do
+    it 'Basket: GR1, GR1 → Total: £3.11' do
       scan_items([green_tea, green_tea])
-      expect(checkout.total).to eq(money(3.11))
+      expect(checkout.total).to money_eq("3.11")
     end
 
-    it 'Basket: SR1, SR1, GR1, SR1 -> Total: £16.61' do
+    it 'Basket: SR1, SR1, GR1, SR1 → Total: £16.61' do
       scan_items([strawberries, strawberries, green_tea, strawberries])
-      expect(checkout.total).to eq(money(16.61))
+      expect(checkout.total).to money_eq("16.61")
     end
 
-    it 'Basket: GR1, CF1, SR1, CF1, CF1 -> Total: £30.57' do
+    it 'Basket: GR1, CF1, SR1, CF1, CF1 → Total: £30.57' do
       scan_items([green_tea, coffee, strawberries, coffee, coffee])
-      expect(checkout.total).to eq(money(30.57))
+      expect(checkout.total).to money_eq("30.57")
     end
   end
 end
