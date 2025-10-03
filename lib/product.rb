@@ -1,4 +1,5 @@
 require 'bigdecimal'
+require_relative 'decimal_utils'
 
 class Product
   attr_reader :code, :name, :price
@@ -6,6 +7,10 @@ class Product
   def initialize(code, name, price)
     @code = code
     @name = name
-    @price = price.is_a?(BigDecimal) ? price : BigDecimal(price.to_s)
+    @price = DecimalUtils.coerce(price)
+  end
+
+  def with_price(new_price)
+    self.class.new(code, name, new_price)
   end
 end

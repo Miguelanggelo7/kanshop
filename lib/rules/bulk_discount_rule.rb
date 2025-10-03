@@ -1,18 +1,19 @@
 require 'bigdecimal'
-require 'product'
+require_relative '../decimal_utils'
+require_relative '../product'
 
 class BulkDiscountRule
   def initialize(product_code, min_quantity, discounted_price)
     @product_code = product_code
     @min_quantity = min_quantity
-    @discounted_price = discounted_price.is_a?(BigDecimal) ? discounted_price : BigDecimal(discounted_price.to_s)
+    @discounted_price = DecimalUtils.coerce(discounted_price)
   end
 
   def apply(items)
     return items unless eligible?(items)
 
     items.map do |item|
-      discount_applicable?(item) ? discounted_item(item) : item
+      discount_applicable?(item) ? item.with_price(@discounted_price) : item
     end
   end
 
@@ -24,9 +25,5 @@ class BulkDiscountRule
 
   def discount_applicable?(item)
     item.code == @product_code
-  end
-
-  def discounted_item(item)
-    Product.new(item.code, item.name, @discounted_price)
   end
 end

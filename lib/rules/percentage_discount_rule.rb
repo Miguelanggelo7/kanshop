@@ -1,18 +1,19 @@
 require 'bigdecimal'
-require 'product'
+require_relative '../decimal_utils'
+require_relative '../product'
 
 class PercentageDiscountRule
   def initialize(product_code, min_quantity, discount_factor)
     @product_code = product_code
     @min_quantity = min_quantity
-    @discount_factor = discount_factor.is_a?(BigDecimal) ? discount_factor : BigDecimal(discount_factor.to_s)
+    @discount_factor = DecimalUtils.coerce(discount_factor)
   end
 
   def apply(items)
     return items unless eligible?(items)
 
     items.map do |item|
-      discount_applicable?(item) ? discounted_item(item) : item
+      discount_applicable?(item) ? item.with_price(discounted_price_for(item)) : item
     end
   end
 
@@ -25,9 +26,8 @@ class PercentageDiscountRule
   def discount_applicable?(item)
     item.code == @product_code
   end
-
-  def discounted_item(item)
-    discounted_price = (item.price * @discount_factor)
-    Product.new(item.code, item.name, discounted_price)
+  
+  def discounted_price_for(item)
+    item.price * @discount_factor
   end
 end

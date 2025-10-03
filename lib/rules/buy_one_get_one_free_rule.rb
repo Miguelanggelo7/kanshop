@@ -1,5 +1,5 @@
 require 'bigdecimal'
-require 'product'
+require_relative '../product'
 
 class BuyOneGetOneFreeRule
   def initialize(product_code)
@@ -20,7 +20,7 @@ class BuyOneGetOneFreeRule
 
   def apply_bogof(items)
     items.each_with_index.map do |item, index|
-      free_item?(index) ? Product.new(item.code, item.name, BigDecimal("0")) : item
+      free_item?(index) ? item.with_price(BigDecimal("0")) : item
     end
   end
 

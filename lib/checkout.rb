@@ -1,5 +1,6 @@
 # lib/checkout.rb
 require 'bigdecimal'
+require_relative 'product'
 
 class Checkout
   def initialize(pricing_rules = [])
@@ -8,6 +9,8 @@ class Checkout
   end
 
   def scan(product)
+    raise ArgumentError, "Expected Product, got #{product.class}" unless product.is_a?(Product)
+
     @items << product
   end
 
